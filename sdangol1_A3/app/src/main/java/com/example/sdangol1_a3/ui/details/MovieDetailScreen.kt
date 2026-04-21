@@ -2,18 +2,21 @@ package com.example.sdangol1_a3.ui.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.sdangol1_a3.data.CastMember
 import com.example.sdangol1_a3.data.Movie
-import com.example.sdangol1_a3.ui.common.MovieAttributeDisplay
+import com.example.sdangol1_a3.ui.common.LabelText
 import com.example.sdangol1_a3.ui.common.MovieButton
 import com.example.sdangol1_a3.ui.common.MoviePosterImage
-import com.example.sdangol1_a3.ui.common.SectionHeader
+import com.example.sdangol1_a3.ui.common.ValueText
 import com.example.sdangol1_a3.ui.details.components.CastList
 
 @Composable
@@ -25,41 +28,59 @@ fun MovieDetailScreen(
     onLoadCast: () -> Unit = {},
     onViewPerson: (CastMember) -> Unit = {}
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             MoviePosterImage(
                 imageUrl = movie.imageUrl,
-                contentDescription = movie.title
+                contentDescription = movie.title,
+                modifier = Modifier.weight(1f)
             )
-        }
 
-        item {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                MovieAttributeDisplay("Title", movie.title)
-                MovieAttributeDisplay("Description", movie.description)
-                MovieAttributeDisplay("Year", movie.year)
-                MovieAttributeDisplay("Rating", movie.averageRating ?: "N/A")
-                MovieAttributeDisplay("Genres", movie.genres.joinToString())
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                LabelText("Title")
+                ValueText(movie.title)
+
+                LabelText("Year")
+                ValueText(movie.year)
+
+                LabelText("IMDb Rating")
+                ValueText(movie.averageRating.ifBlank { "N/A" })
+
+                LabelText("Genres")
+                ValueText(
+                    if (movie.genres.isEmpty()) "N/A"
+                    else movie.genres.joinToString(", ")
+                )
             }
         }
 
-        item {
-            MovieButton(
-                text = "View Cast",
-                onClick = onLoadCast,
-                enabled = castButtonEnabled
-            )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LabelText("Description")
+            ValueText(movie.description)
         }
 
-        item {
-            SectionHeader("Cast")
-        }
+        MovieButton(
+            text = "View Cast",
+            onClick = onLoadCast,
+            enabled = castButtonEnabled
+        )
 
-        item {
+        if (cast.isNotEmpty()) {
             CastList(
                 cast = cast,
                 onViewPerson = onViewPerson

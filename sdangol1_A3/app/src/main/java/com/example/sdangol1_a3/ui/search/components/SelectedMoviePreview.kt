@@ -1,38 +1,32 @@
 package com.example.sdangol1_a3.ui.search.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Text
 import com.example.sdangol1_a3.data.SearchMovie
-import com.example.sdangol1_a3.ui.common.MovieAttributeDisplay
 import com.example.sdangol1_a3.ui.common.MoviePosterImage
-import com.example.sdangol1_a3.ui.common.SectionHeader
 
 @Composable
 fun SelectedMoviePreview(
     selectedMovie: SearchMovie?,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        SectionHeader("Selected Movie")
-
-        if (selectedMovie != null) {
-            MoviePosterImage(
-                imageUrl = selectedMovie.imageUrl,
-                contentDescription = selectedMovie.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, fill = false)
-            )
-            MovieAttributeDisplay("Title", selectedMovie.title)
-            MovieAttributeDisplay("Description", selectedMovie.description)
-            MovieAttributeDisplay("Year", selectedMovie.year)
+    if (selectedMovie == null) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Select a movie to preview its poster")
         }
+    } else {
+        MoviePosterImage(
+            imageUrl = selectedMovie.imageUrl,
+            contentDescription = selectedMovie.title,
+            modifier = modifier.fillMaxWidth()
+        )
     }
 }

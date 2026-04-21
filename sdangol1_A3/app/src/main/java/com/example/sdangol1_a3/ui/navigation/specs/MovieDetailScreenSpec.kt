@@ -2,6 +2,7 @@ package com.example.sdangol1_a3.ui.navigation.specs
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.example.sdangol1_a3.ui.details.MovieDetailScreen
 import com.example.sdangol1_a3.ui.viewmodel.MovieDetailViewModel
 import com.example.sdangol1_a3.ui.viewmodel.MovieViewModelFactory
 import com.example.sdangol1_a3.ui.viewmodel.intent.MovieDetailIntent
+import java.util.UUID
 
 data object MovieDetailScreenSpec : IScreenSpec {
     private const val ROUTE_BASE = "detail"
@@ -58,6 +60,14 @@ data object MovieDetailScreenSpec : IScreenSpec {
         )[MovieDetailViewModel::class]
 
         val (state, dispatcher, effects) = viewModel.use(navBackStackEntry)
+
+        val movieIdArg = navBackStackEntry.arguments?.getString(ARG_MOVIE_ID)
+
+        LaunchedEffect(movieIdArg) {
+            movieIdArg?.let {
+                dispatcher.invoke(MovieDetailIntent.LoadMovie(UUID.fromString(it)))
+            }
+        }
 
         val movie = state.movie
         if (movie == null) {
