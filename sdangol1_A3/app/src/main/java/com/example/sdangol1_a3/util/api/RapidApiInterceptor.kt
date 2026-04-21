@@ -1,5 +1,6 @@
 package com.example.sdangol1_a3.util.api
 
+import com.example.sdangol1_a3.util.Constants
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -9,8 +10,9 @@ class RapidApiInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
             .newBuilder()
-            .addHeader("X-RapidAPI-Key", apiKey)
-            .addHeader("X-RapidAPI-Host", "imdb8.p.rapidapi.com")
+            .addHeader("x-rapidapi-key", apiKey)
+            .addHeader("x-rapidapi-host", Constants.RAPID_API_HOST)
+            .addHeader("Content-Type", "application/json")
             .build()
 
         return chain.proceed(request)

@@ -1,6 +1,7 @@
 package com.example.sdangol1_a3.data
 
 import android.content.Context
+import com.example.sdangol1_a3.BuildConfig
 import com.example.sdangol1_a3.data.database.MovieDatabase
 import com.example.sdangol1_a3.util.api.MovieFetchr
 import kotlinx.coroutines.flow.Flow
@@ -16,8 +17,12 @@ class MovieRepo private constructor(
         private var INSTANCE: MovieRepo? = null
 
         fun getInstance(context: Context): MovieRepo {
+            android.util.Log.d(
+                "API_KEY_CHECK",
+                "Key length = ${BuildConfig.RAPID_API_KEY.length}"
+            )
             return INSTANCE ?: MovieRepo(
-                fetchr = MovieFetchr(),
+                fetchr = MovieFetchr(BuildConfig.RAPID_API_KEY),
                 database = MovieDatabase.getInstance(context)
             ).also { INSTANCE = it }
         }
@@ -38,6 +43,9 @@ class MovieRepo private constructor(
 
     suspend fun searchMovies(query: String): List<SearchMovie> =
         fetchr.searchMovies(query)
+
+    suspend fun fetchMovieDetails(imdbId: String): Movie =
+        fetchr.fetchMovieDetails(imdbId)
 
     suspend fun fetchCast(imdbId: String): List<CastMember> =
         fetchr.fetchCast(imdbId)

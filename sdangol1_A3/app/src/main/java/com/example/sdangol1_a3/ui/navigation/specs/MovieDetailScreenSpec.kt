@@ -15,6 +15,7 @@ import com.example.sdangol1_a3.ui.common.LoadingContent
 import com.example.sdangol1_a3.ui.details.MovieDetailScreen
 import com.example.sdangol1_a3.ui.viewmodel.MovieDetailViewModel
 import com.example.sdangol1_a3.ui.viewmodel.MovieViewModelFactory
+import com.example.sdangol1_a3.ui.viewmodel.intent.MovieDetailIntent
 
 data object MovieDetailScreenSpec : IScreenSpec {
     private const val ROUTE_BASE = "detail"
@@ -68,7 +69,7 @@ data object MovieDetailScreenSpec : IScreenSpec {
                 modifier = modifier,
                 castButtonEnabled = true,
                 onLoadCast = {
-                    // TODO dispatcher.invoke(...)
+                    dispatcher.invoke(MovieDetailIntent.FetchCast(movie.imdbId))
                 },
                 onViewPerson = {
                     // TODO launch IMDb intent

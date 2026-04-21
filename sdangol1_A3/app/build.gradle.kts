@@ -19,6 +19,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val rapidApiKey = project.findProperty("RAPID_API_KEY") as String? ?: ""
+        buildConfigField("String", "RAPID_API_KEY", "\"$rapidApiKey\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -39,6 +42,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -61,11 +65,14 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     implementation(libs.squareup.okhttp)
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.converter.kotlinx)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -74,5 +81,4 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation(libs.kotlin.reflect)
 }

@@ -7,8 +7,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.sdangol1_a3.ui.common.MovieButton
 import androidx.compose.ui.unit.dp
+import com.example.sdangol1_a3.ui.common.MovieButton
 
 @Composable
 fun MovieSearchBar(

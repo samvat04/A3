@@ -2,6 +2,7 @@ package com.example.sdangol1_a3.ui.search.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,19 +16,23 @@ fun SelectedMoviePreview(
     selectedMovie: SearchMovie?,
     modifier: Modifier = Modifier
 ) {
-    if(selectedMovie == null) return
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         SectionHeader("Selected Movie")
-        MoviePosterImage(
-            imageUrl = selectedMovie.imageUrl,
-            contentDescription = selectedMovie.title
-        )
-        MovieAttributeDisplay("Title", selectedMovie.title)
-        MovieAttributeDisplay("Description", selectedMovie.description)
-        MovieAttributeDisplay("Year", selectedMovie.year)
+
+        if (selectedMovie != null) {
+            MoviePosterImage(
+                imageUrl = selectedMovie.imageUrl,
+                contentDescription = selectedMovie.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
+            )
+            MovieAttributeDisplay("Title", selectedMovie.title)
+            MovieAttributeDisplay("Description", selectedMovie.description)
+            MovieAttributeDisplay("Year", selectedMovie.year)
+        }
     }
 }

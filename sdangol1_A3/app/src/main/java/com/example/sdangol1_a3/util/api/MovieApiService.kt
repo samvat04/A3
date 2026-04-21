@@ -1,18 +1,19 @@
 package com.example.sdangol1_a3.util.api
 
-import com.example.sdangol1_a3.data.response.AutocompleteResponse
-import com.example.sdangol1_a3.data.response.CastResponse
+import com.example.sdangol1_a3.data.response.ImdbCastDto
+import com.example.sdangol1_a3.data.response.ImdbTitleDto
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieApiService {
-    @GET("auto-complete")
+    @GET("api/imdb/autocomplete")
     suspend fun autocomplete(
-        @Query("q") query: String
-    ): AutocompleteResponse
+        @Query("query") query: String
+    ): List<ImdbTitleDto>
 
-    @GET("title/get-top-cast")
+    @GET("api/imdb/{imdbId}/cast")
     suspend fun getCast(
-        @Query("tconst") imdbId: String
-    ): CastResponse
+        @Path("imdbId") imdbId: String
+    ): List<ImdbCastDto>
 }

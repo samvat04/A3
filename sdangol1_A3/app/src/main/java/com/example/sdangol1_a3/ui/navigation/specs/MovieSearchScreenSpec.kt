@@ -44,7 +44,7 @@ data object MovieSearchScreenSpec : IScreenSpec {
             results = state.results,
             selectedMovie = state.selectedMovie,
             modifier = modifier,
-            searchEnabled = state.query.isNotBlank(),
+            searchEnabled = state.query.length >= 3,
             saveEnabled = state.selectedMovie != null,
             onQueryChange = { query ->
                 dispatcher.invoke(MovieSearchIntent.UpdateQuery(query))

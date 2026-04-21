@@ -4,5 +4,6 @@ data class CastMember(
     val imdbPersonId: String,
     val name: String,
     val job: String,
-    val characters: List<String> = emptyList()
+    val characters: List<String> = emptyList(),
+    val imdbUrl: String = ""
 )

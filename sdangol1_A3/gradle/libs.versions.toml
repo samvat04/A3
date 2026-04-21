@@ -15,6 +15,7 @@ coilVersion = "3.3.0"
 retrofitVersion = "3.0.0"
 kotlinxSerializationJson = "1.9.0"
 okhttpVersion = "5.1.0"
+coilNetworkOkhttpVersion = "3.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilVersion" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilNetworkOkhttpVersion" }
 
 squareup-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttpVersion" }
 squareup-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion" }
