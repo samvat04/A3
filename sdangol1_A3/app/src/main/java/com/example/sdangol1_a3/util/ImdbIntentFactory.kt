@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.sdangol1_a3.data.CastMember
 
 object ImdbIntentFactory {
+
     fun buildPersonPageIntent(castMember: CastMember): Intent {
         val url = if (castMember.imdbUrl.isNotBlank()) {
             castMember.imdbUrl

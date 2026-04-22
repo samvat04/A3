@@ -74,11 +74,16 @@ fun MovieDetailScreen(
             ValueText(movie.description)
         }
 
-        MovieButton(
-            text = "View Cast",
-            onClick = onLoadCast,
-            enabled = castButtonEnabled
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            MovieButton(
+                text = "View Cast",
+                onClick = onLoadCast,
+                enabled = castButtonEnabled
+            )
+        }
 
         if (cast.isNotEmpty()) {
             CastList(

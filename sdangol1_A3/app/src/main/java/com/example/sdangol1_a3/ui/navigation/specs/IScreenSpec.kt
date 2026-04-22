@@ -61,7 +61,7 @@ sealed interface IScreenSpec {
                 { }
             },
             title = {
-                Text("Movies")
+                Text("Android Movie Database")
             },
             actions = {
                 TopAppBarActions(

@@ -34,18 +34,41 @@ class MovieSearchViewModel(
     override fun handleIntent(intent: MovieSearchIntent) {
         when (intent) {
             is MovieSearchIntent.UpdateQuery -> {
-                Log.d(LOG_TAG, "Updating query to '${intent.query}'")
+                val query = intent.query
+
                 _stateFlow.update {
-                    it.copy(query = intent.query)
+                    it.copy(query = query)
                 }
 
-                if (intent.query.length < 3) {
-                    _stateFlow.update {
-                        it.copy(
-                            results = emptyList(),
-                            selectedMovie = null,
-                            loading = false
-                        )
+                viewModelScope.launch {
+                    if (query.length < 3) {
+                        _stateFlow.update {
+                            it.copy(
+                                results = emptyList(),
+                                selectedMovie = null,
+                                loading = false
+                            )
+                        }
+                    } else if (query.length % 3 == 0) {
+                        _stateFlow.update { it.copy(loading = true) }
+
+                        try {
+                            val results = repo.searchMovies(query)
+                            _stateFlow.update {
+                                it.copy(
+                                    results = results,
+                                    loading = false
+                                )
+                            }
+                        } catch (e: Exception) {
+                            _stateFlow.update {
+                                it.copy(
+                                    results = emptyList(),
+                                    loading = false
+                                )
+                            }
+                            _effectFlow.emit(MovieSearchEffect.SearchFailed)
+                        }
                     }
                 }
             }
@@ -103,6 +126,17 @@ class MovieSearchViewModel(
         }
     }
 
+    fun undoSaveMovie(movie: Movie) {
+        viewModelScope.launch {
+            try {
+                repo.deleteMovie(movie)
+                Log.d(LOG_TAG, "Undo save for movie: ${movie.title}")
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "Failed to undo saved movie", e)
+            }
+        }
+    }
+
     private fun saveSelectedMovie() {
         val selected = stateFlow.value.selectedMovie ?: return
 
@@ -110,22 +144,24 @@ class MovieSearchViewModel(
             try {
                 if (repo.alreadyExists(selected.imdbId)) {
                     Log.d(LOG_TAG, "Movie already exists: ${selected.imdbId}")
-                    _effectFlow.emit(MovieSearchEffect.MovieAlreadyExists)
+                    _effectFlow.emit(MovieSearchEffect.MovieAlreadyExists(selected.title))
                     return@launch
                 }
 
-                repo.addMovie(
-                    Movie(
-                        imdbId = selected.imdbId,
-                        title = selected.title,
-                        description = selected.description,
-                        year = selected.year,
-                        imageUrl = selected.imageUrl
-                    )
+                val movie = Movie(
+                    imdbId = selected.imdbId,
+                    title = selected.title,
+                    description = selected.description,
+                    year = selected.year,
+                    imageUrl = selected.imageUrl,
+                    averageRating = selected.averageRating,
+                    genres = selected.genres
                 )
 
+                repo.addMovie(movie)
+
                 Log.d(LOG_TAG, "Movie saved: ${selected.title}")
-                _effectFlow.emit(MovieSearchEffect.SaveSucceeded)
+                _effectFlow.emit(MovieSearchEffect.SaveSucceeded(movie))
             } catch (e: Exception) {
                 Log.e(LOG_TAG, "Failed to save selected movie", e)
             }

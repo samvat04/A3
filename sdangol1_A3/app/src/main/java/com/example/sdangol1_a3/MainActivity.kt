@@ -18,6 +18,10 @@ import com.example.sdangol1_a3.ui.theme.Sdangol1_A3Theme
 import kotlinx.coroutines.flow.collectLatest
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        lateinit var appSnackbarHostState: SnackbarHostState
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -26,9 +30,14 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val snackbarHostState = remember { SnackbarHostState() }
 
+                appSnackbarHostState = snackbarHostState
+
                 LaunchedEffect(Unit) {
-                    SnackbarManager.messages.collectLatest { message ->
-                        snackbarHostState.showSnackbar(message)
+                    SnackbarManager.messages.collectLatest { snackbarMessage ->
+                        snackbarHostState.showSnackbar(
+                            message = snackbarMessage.message,
+                            actionLabel = snackbarMessage.actionLabel
+                        )
                     }
                 }
 

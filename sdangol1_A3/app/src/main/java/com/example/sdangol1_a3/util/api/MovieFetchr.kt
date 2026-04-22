@@ -32,15 +32,19 @@ class MovieFetchr(
     private val movieApiService = retrofit.create(MovieApiService::class.java)
 
     suspend fun searchMovies(query: String): List<SearchMovie> {
-        return movieApiService.autocomplete(query).map { dto ->
-            SearchMovie(
-                imdbId = dto.id,
-                title = dto.primaryTitle,
-                description = dto.description ?: "",
-                year = dto.startYear?.toString() ?: "",
-                imageUrl = dto.primaryImage ?: ""
-            )
-        }
+        return movieApiService.autocomplete(query)
+            .filter { it.type == "movie" }
+            .map { dto ->
+                SearchMovie(
+                    imdbId = dto.id,
+                    title = dto.primaryTitle,
+                    description = dto.description ?: "",
+                    year = dto.startYear?.toString() ?: "",
+                    imageUrl = dto.primaryImage ?: "",
+                    averageRating = dto.averageRating?.toString() ?: "",
+                    genres = dto.genres ?: emptyList()
+                )
+            }
     }
 
     suspend fun fetchMovieDetails(imdbId: String): Movie {

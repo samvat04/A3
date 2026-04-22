@@ -1,8 +1,19 @@
 package com.example.sdangol1_a3.ui.navigation.specs
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
@@ -14,9 +25,14 @@ import androidx.navigation.navArgument
 import com.example.sdangol1_a3.R
 import com.example.sdangol1_a3.ui.common.LoadingContent
 import com.example.sdangol1_a3.ui.details.MovieDetailScreen
+import com.example.sdangol1_a3.ui.details.components.DeleteMovieConfirmationDialog
+import com.example.sdangol1_a3.ui.navigation.SnackbarManager
 import com.example.sdangol1_a3.ui.viewmodel.MovieDetailViewModel
 import com.example.sdangol1_a3.ui.viewmodel.MovieViewModelFactory
+import com.example.sdangol1_a3.ui.viewmodel.collectInLaunchedEffect
+import com.example.sdangol1_a3.ui.viewmodel.effect.MovieDetailEffect
 import com.example.sdangol1_a3.ui.viewmodel.intent.MovieDetailIntent
+import com.example.sdangol1_a3.util.ImdbIntentFactory
 import java.util.UUID
 
 data object MovieDetailScreenSpec : IScreenSpec {
@@ -69,6 +85,19 @@ data object MovieDetailScreenSpec : IScreenSpec {
             }
         }
 
+        effects.collectInLaunchedEffect { effect ->
+            when (effect) {
+                is MovieDetailEffect.DeleteSucceeded -> {
+                    SnackbarManager.showMessage("${effect.movieTitle} deleted!")
+                    navController.navigateUp()
+                }
+                MovieDetailEffect.DeleteFailed -> {
+                    SnackbarManager.showMessage("Failed to delete movie")
+                }
+                null -> {}
+            }
+        }
+
         val movie = state.movie
         if (movie == null) {
             LoadingContent(modifier = modifier)
@@ -81,8 +110,10 @@ data object MovieDetailScreenSpec : IScreenSpec {
                 onLoadCast = {
                     dispatcher.invoke(MovieDetailIntent.FetchCast(movie.imdbId))
                 },
-                onViewPerson = {
-                    // TODO launch IMDb intent
+                onViewPerson = { castMember ->
+                    context.startActivity(
+                        ImdbIntentFactory.buildPersonPageIntent(castMember)
+                    )
                 }
             )
         }
@@ -93,6 +124,68 @@ data object MovieDetailScreenSpec : IScreenSpec {
         navController: NavHostController,
         navBackStackEntry: NavBackStackEntry?
     ) {
-        Text("")
+        if (navBackStackEntry == null) return
+
+        val context = LocalContext.current
+
+        val viewModel = ViewModelProvider(
+            store = navBackStackEntry.viewModelStore,
+            factory = MovieViewModelFactory(),
+            defaultCreationExtras = MovieViewModelFactory.creationExtras(
+                navBackStackEntry.defaultViewModelCreationExtras,
+                context
+            )
+        )[MovieDetailViewModel::class]
+
+        val (state, dispatcher, effects) = viewModel.use(navBackStackEntry)
+
+        var showDeleteDialog by remember { mutableStateOf(false) }
+
+        val movie = state.movie ?: return
+
+        Row {
+            IconButton(
+                onClick = {
+                    dispatcher.invoke(MovieDetailIntent.ToggleFavorite(movie))
+                }
+            ) {
+                Icon(
+                    imageVector = if (movie.isFavorite) {
+                        Icons.Filled.Favorite
+                    } else {
+                        Icons.Outlined.FavoriteBorder
+                    },
+                    contentDescription = if (movie.isFavorite) {
+                        "Unfavorite movie"
+                    } else {
+                        "Favorite movie"
+                    }
+                )
+            }
+
+            IconButton(
+                onClick = {
+                    showDeleteDialog = true
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Delete movie"
+                )
+            }
+        }
+
+        if (showDeleteDialog) {
+            DeleteMovieConfirmationDialog(
+                movie = movie,
+                onDismissRequest = {
+                    showDeleteDialog = false
+                },
+                onConfirmation = {
+                    showDeleteDialog = false
+                    dispatcher.invoke(MovieDetailIntent.DeleteMovie(movie))
+                }
+            )
+        }
     }
 }

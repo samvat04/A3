@@ -3,11 +3,19 @@ package com.example.sdangol1_a3.ui.navigation
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
+data class SnackbarMessage(
+    val message: String,
+    val actionLabel: String? = null
+)
+
 object SnackbarManager {
-    private val _messages = MutableSharedFlow<String>()
+    private val _messages = MutableSharedFlow<SnackbarMessage>()
     val messages = _messages.asSharedFlow()
 
-    suspend fun showMessage(message: String) {
-        _messages.emit(message)
+    suspend fun showMessage(
+        message: String,
+        actionLabel: String? = null
+    ) {
+        _messages.emit(SnackbarMessage(message, actionLabel))
     }
 }

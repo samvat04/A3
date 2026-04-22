@@ -1,16 +1,22 @@
 package com.example.sdangol1_a3.ui.navigation.specs
 
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import com.example.sdangol1_a3.MainActivity
 import com.example.sdangol1_a3.R
+import com.example.sdangol1_a3.ui.navigation.SnackbarManager
 import com.example.sdangol1_a3.ui.search.MovieSearchScreen
 import com.example.sdangol1_a3.ui.viewmodel.MovieSearchViewModel
 import com.example.sdangol1_a3.ui.viewmodel.MovieViewModelFactory
+import com.example.sdangol1_a3.ui.viewmodel.collectInLaunchedEffect
+import com.example.sdangol1_a3.ui.viewmodel.effect.MovieSearchEffect
 import com.example.sdangol1_a3.ui.viewmodel.intent.MovieSearchIntent
 
 data object MovieSearchScreenSpec : IScreenSpec {
@@ -38,6 +44,27 @@ data object MovieSearchScreenSpec : IScreenSpec {
         )[MovieSearchViewModel::class]
 
         val (state, dispatcher, effects) = viewModel.use(navBackStackEntry)
+
+        effects.collectInLaunchedEffect { effect ->
+            when (effect) {
+                is MovieSearchEffect.SaveSucceeded -> {
+                    val result = MainActivity.appSnackbarHostState.showSnackbar(
+                        message = "${effect.movie.title} saved!",
+                        actionLabel = "Undo"
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.undoSaveMovie(effect.movie)
+                    }
+                }
+                is MovieSearchEffect.MovieAlreadyExists -> {
+                    SnackbarManager.showMessage("${effect.title} already in database.")
+                }
+                MovieSearchEffect.SearchFailed -> {
+                    SnackbarManager.showMessage("Search failed")
+                }
+                null -> {}
+            }
+        }
 
         MovieSearchScreen(
             query = state.query,

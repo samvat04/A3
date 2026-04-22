@@ -1,5 +1,6 @@
 package com.example.sdangol1_a3.ui.navigation.specs
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -15,6 +16,16 @@ import com.example.sdangol1_a3.R
 import com.example.sdangol1_a3.ui.list.MovieListScreen
 import com.example.sdangol1_a3.ui.viewmodel.MovieListViewModel
 import com.example.sdangol1_a3.ui.viewmodel.MovieViewModelFactory
+import com.example.sdangol1_a3.ui.viewmodel.intent.MovieListIntent
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.example.sdangol1_a3.util.MovieFilterOption
 
 data object MovieListScreenSpec : IScreenSpec {
     override val route = "list"
@@ -50,8 +61,8 @@ data object MovieListScreenSpec : IScreenSpec {
                     MovieDetailScreenSpec.buildRoute(movie.id.toString())
                 )
             },
-            onToggleFavorite = {
-                // TODO dispatcher.invoke(...)
+            onToggleFavorite = { movie ->
+                dispatcher.invoke(MovieListIntent.ToggleFavorite(movie))
             }
         )
     }
@@ -61,13 +72,58 @@ data object MovieListScreenSpec : IScreenSpec {
         navController: NavHostController,
         navBackStackEntry: NavBackStackEntry?
     ) {
-        IconButton(
-            onClick = { navController.navigate(MovieSearchScreenSpec.route) }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Search"
+        val context = LocalContext.current
+
+        val viewModel = ViewModelProvider(
+            store = navBackStackEntry!!.viewModelStore,
+            factory = MovieViewModelFactory(),
+            defaultCreationExtras = MovieViewModelFactory.creationExtras(
+                navBackStackEntry.defaultViewModelCreationExtras,
+                context
             )
+        )[MovieListViewModel::class]
+
+        val (state, dispatcher, _) = viewModel.use(navBackStackEntry)
+
+        var showMenu by remember { mutableStateOf(false) }
+
+        Row {
+
+            IconButton(onClick = { showMenu = true }) {
+                Icon(
+                    imageVector = Icons.Filled.FilterList,
+                    contentDescription = "Filter Movies"
+                )
+            }
+
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("All") },
+                    onClick = {
+                        showMenu = false
+                        dispatcher.invoke(MovieListIntent.SetFilter(MovieFilterOption.ALL))
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Favorites") },
+                    onClick = {
+                        showMenu = false
+                        dispatcher.invoke(MovieListIntent.SetFilter(MovieFilterOption.FAVORITES))
+                    }
+                )
+            }
+
+            IconButton(
+                onClick = { navController.navigate(MovieSearchScreenSpec.route) }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Search"
+                )
+            }
         }
     }
 }

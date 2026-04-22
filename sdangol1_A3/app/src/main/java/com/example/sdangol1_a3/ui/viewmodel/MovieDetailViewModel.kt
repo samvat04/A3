@@ -32,20 +32,32 @@ class MovieDetailViewModel(
                     _stateFlow.update { it.copy(movie = repo.loadMovie(intent.movieId)) }
                 }
             }
+
             is MovieDetailIntent.DeleteMovie -> {
                 viewModelScope.launch {
                     if (repo.deleteMovie(intent.movie)) {
-                        _effectFlow.emit(MovieDetailEffect.DeleteSucceeded)
+                        _effectFlow.emit(MovieDetailEffect.DeleteSucceeded(intent.movie.title))
                     } else {
                         _effectFlow.emit(MovieDetailEffect.DeleteFailed)
                     }
                 }
             }
+
             is MovieDetailIntent.FetchCast -> {
                 viewModelScope.launch {
                     _stateFlow.update { it.copy(loadingCast = true) }
                     val cast = repo.fetchCast(intent.imdbId)
                     _stateFlow.update { it.copy(cast = cast, loadingCast = false) }
+                }
+            }
+
+            is MovieDetailIntent.ToggleFavorite -> {
+                viewModelScope.launch {
+                    val updatedMovie = intent.movie.copy(
+                        isFavorite = !intent.movie.isFavorite
+                    )
+                    repo.updateMovie(updatedMovie)
+                    _stateFlow.update { it.copy(movie = updatedMovie) }
                 }
             }
         }

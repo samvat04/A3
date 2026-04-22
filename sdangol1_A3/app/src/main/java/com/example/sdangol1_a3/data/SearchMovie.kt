@@ -5,5 +5,7 @@ data class SearchMovie(
     val title: String,
     val description: String,
     val year: String,
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val averageRating: String = "",
+    val genres: List<String> = emptyList()
 )

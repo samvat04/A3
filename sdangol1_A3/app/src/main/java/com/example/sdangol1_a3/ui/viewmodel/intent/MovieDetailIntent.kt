@@ -7,4 +7,5 @@ sealed class MovieDetailIntent : MovieIntent() {
     data class LoadMovie(val movieId: UUID) : MovieDetailIntent()
     data class DeleteMovie(val movie: Movie) : MovieDetailIntent()
     data class FetchCast(val imdbId: String) : MovieDetailIntent()
+    data class ToggleFavorite(val movie: Movie) : MovieDetailIntent()
 }
