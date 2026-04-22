@@ -2,7 +2,6 @@ package com.example.sdangol1_a3.ui.navigation.specs
 
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
@@ -50,7 +49,8 @@ data object MovieSearchScreenSpec : IScreenSpec {
                 is MovieSearchEffect.SaveSucceeded -> {
                     val result = MainActivity.appSnackbarHostState.showSnackbar(
                         message = "${effect.movie.title} saved!",
-                        actionLabel = "Undo"
+                        actionLabel = "Undo",
+                        duration = androidx.compose.material3.SnackbarDuration.Short
                     )
                     if (result == SnackbarResult.ActionPerformed) {
                         viewModel.undoSaveMovie(effect.movie)
