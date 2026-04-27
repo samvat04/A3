@@ -9,6 +9,7 @@ data class SnackbarMessage(
 )
 
 object SnackbarManager {
+    // SharedFlow is used so snackbar events can be emitted from ViewModels or screen specs
     private val _messages = MutableSharedFlow<SnackbarMessage>()
     val messages = _messages.asSharedFlow()
 

@@ -32,6 +32,7 @@ fun MovieSearchScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Top half contains the search controls and scrollable autocompleted results
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -55,6 +56,7 @@ fun MovieSearchScreen(
             )
         }
 
+        // Bottom half displays the currently selected poster preview and save button
         Column(
             modifier = Modifier
                 .weight(1f)

@@ -21,6 +21,7 @@ class MovieRepo private constructor(
                 "API_KEY_CHECK",
                 "Key length = ${BuildConfig.RAPID_API_KEY.length}"
             )
+            // Keeps a single shared repository instance
             return INSTANCE ?: MovieRepo(
                 fetchr = MovieFetchr(BuildConfig.RAPID_API_KEY),
                 database = MovieDatabase.getInstance(context)
@@ -28,6 +29,7 @@ class MovieRepo private constructor(
         }
     }
 
+    // Exposes the saved movie list as a Flow so UI state updates automatically when the database changes
     fun getMovies(): Flow<List<Movie>> = movieDao.getMovies()
 
     suspend fun loadMovie(id: UUID): Movie? = movieDao.getMovieById(id)
@@ -38,14 +40,12 @@ class MovieRepo private constructor(
 
     suspend fun deleteMovie(movie: Movie): Boolean = movieDao.deleteMovie(movie) > 0
 
+    // Used before inserting a movie to avoid duplicate saves for the same IMDb entry
     suspend fun alreadyExists(imdbId: String): Boolean =
         movieDao.getMovieByImdbId(imdbId) != null
 
     suspend fun searchMovies(query: String): List<SearchMovie> =
         fetchr.searchMovies(query)
-
-    suspend fun fetchMovieDetails(imdbId: String): Movie =
-        fetchr.fetchMovieDetails(imdbId)
 
     suspend fun fetchCast(imdbId: String): List<CastMember> =
         fetchr.fetchCast(imdbId)

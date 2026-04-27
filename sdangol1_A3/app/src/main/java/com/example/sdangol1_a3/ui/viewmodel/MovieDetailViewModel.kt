@@ -29,12 +29,14 @@ class MovieDetailViewModel(
         when (intent) {
             is MovieDetailIntent.LoadMovie -> {
                 viewModelScope.launch {
+                    // Loads the movie from the local repository so the detail screen
                     _stateFlow.update { it.copy(movie = repo.loadMovie(intent.movieId)) }
                 }
             }
 
             is MovieDetailIntent.DeleteMovie -> {
                 viewModelScope.launch {
+                    // Emits one time effect instead of directly handling UI work
                     if (repo.deleteMovie(intent.movie)) {
                         _effectFlow.emit(MovieDetailEffect.DeleteSucceeded(intent.movie.title))
                     } else {
@@ -45,6 +47,7 @@ class MovieDetailViewModel(
 
             is MovieDetailIntent.FetchCast -> {
                 viewModelScope.launch {
+                    // Loading flag
                     _stateFlow.update { it.copy(loadingCast = true) }
                     val cast = repo.fetchCast(intent.imdbId)
                     _stateFlow.update { it.copy(cast = cast, loadingCast = false) }
@@ -53,6 +56,7 @@ class MovieDetailViewModel(
 
             is MovieDetailIntent.ToggleFavorite -> {
                 viewModelScope.launch {
+                    // Creates a new movie copy rather than mutating the old one
                     val updatedMovie = intent.movie.copy(
                         isFavorite = !intent.movie.isFavorite
                     )

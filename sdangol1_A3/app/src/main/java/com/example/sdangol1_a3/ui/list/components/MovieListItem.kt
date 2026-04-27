@@ -27,6 +27,7 @@ fun MovieListItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            // Tapping the card opens the movie's detail screen
             .clickable { onSelectMovie(movie) },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

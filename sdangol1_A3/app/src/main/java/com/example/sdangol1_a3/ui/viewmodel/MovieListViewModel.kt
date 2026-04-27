@@ -28,10 +28,12 @@ class MovieListViewModel(
     private val _effectFlow = MutableSharedFlow<MovieListEffect?>()
     override val effectFlow = _effectFlow.asSharedFlow()
 
+    // Keeps a copy of the full movie list so filtering can be reapplied locally without requesting the repository again
     private var allMovies: List<Movie> = emptyList()
 
     init {
         viewModelScope.launch {
+            // Continuously observes the repository so the list screen to stay in sync
             repo.getMovies().collectLatest { movies ->
                 allMovies = movies
                 applyFilter()
@@ -43,6 +45,7 @@ class MovieListViewModel(
         when (intent) {
             is MovieListIntent.ToggleFavorite -> toggleFavorite(intent.movie)
             is MovieListIntent.SetFilter -> {
+                // Stores the selected filter in state, then rebuilds the visible movie list
                 _stateFlow.update { it.copy(filter = intent.filter) }
                 applyFilter()
             }
@@ -67,6 +70,7 @@ class MovieListViewModel(
 
     private fun toggleFavorite(movie: Movie) {
         viewModelScope.launch {
+            // Repository is updated here
             repo.updateMovie(movie.copy(isFavorite = !movie.isFavorite))
         }
     }

@@ -15,6 +15,7 @@ fun SelectedMoviePreview(
     selectedMovie: SearchMovie?,
     modifier: Modifier = Modifier
 ) {
+    // Shows placeholder until the user chooses a movie from the results list
     if (selectedMovie == null) {
         Box(
             modifier = modifier.fillMaxSize(),

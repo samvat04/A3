@@ -32,9 +32,11 @@ fun MovieDetailScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            // Vertical scrolling
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Top row shows the poster on the left and summary movie metadata on the right
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -56,13 +58,10 @@ fun MovieDetailScreen(
                 ValueText(movie.year)
 
                 LabelText("IMDb Rating")
-                ValueText(movie.averageRating.ifBlank { "N/A" })
+                ValueText(movie.averageRating)
 
                 LabelText("Genres")
-                ValueText(
-                    if (movie.genres.isEmpty()) "N/A"
-                    else movie.genres.joinToString(", ")
-                )
+                ValueText(movie.genres.joinToString(", "))
             }
         }
 
@@ -78,6 +77,7 @@ fun MovieDetailScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
+            // Cast is loaded on click instead of automatically to avoid unnecessary API requests
             MovieButton(
                 text = "View Cast",
                 onClick = onLoadCast,

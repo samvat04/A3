@@ -33,6 +33,7 @@ data object MovieSearchScreenSpec : IScreenSpec {
     ) {
         val context = LocalContext.current
 
+        // The ViewModel is scoped to this back stack entry while the search screen remains on the navigation stack
         val viewModel = ViewModelProvider(
             store = navBackStackEntry.viewModelStore,
             factory = MovieViewModelFactory(),
@@ -47,6 +48,7 @@ data object MovieSearchScreenSpec : IScreenSpec {
         effects.collectInLaunchedEffect { effect ->
             when (effect) {
                 is MovieSearchEffect.SaveSucceeded -> {
+                    // Save success is handled with an undo snackbar
                     val result = MainActivity.appSnackbarHostState.showSnackbar(
                         message = "${effect.movie.title} saved!",
                         actionLabel = "Undo",

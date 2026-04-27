@@ -25,6 +25,7 @@ fun SearchResultItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            // Selecting a result updates the preview area with the chosen movie
             .clickable { onSelectMovie(movie) },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

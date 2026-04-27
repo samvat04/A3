@@ -7,6 +7,7 @@ import com.example.sdangol1_a3.data.CastMember
 object ImdbIntentFactory {
 
     fun buildPersonPageIntent(castMember: CastMember): Intent {
+        // Uses the API provided IMDb URL, otherwise builds one from the cast member's ID
         val url = if (castMember.imdbUrl.isNotBlank()) {
             castMember.imdbUrl
         } else {

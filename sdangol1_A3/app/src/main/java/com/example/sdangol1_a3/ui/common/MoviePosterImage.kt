@@ -16,6 +16,7 @@ fun MoviePosterImage(
     contentDescription: String,
     modifier: Modifier = Modifier
 ) {
+    // Shows fallback text if the API does not provide a usable poster URL
     if(imageUrl.isNullOrBlank()) {
         Box(
             modifier = modifier

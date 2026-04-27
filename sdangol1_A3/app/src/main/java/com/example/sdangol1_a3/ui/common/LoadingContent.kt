@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 fun LoadingContent(
     modifier: Modifier = Modifier
 ) {
+    // Loading indicator
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

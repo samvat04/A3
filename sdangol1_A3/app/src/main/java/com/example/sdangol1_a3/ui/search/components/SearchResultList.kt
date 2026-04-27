@@ -15,6 +15,7 @@ fun SearchResultList(
     modifier: Modifier = Modifier,
     onSelectMovie: (SearchMovie) -> Unit = {}
 ) {
+    // LazyColumn used so autocomplete results are scrollable even if the API a lot of resutls
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(4.dp),

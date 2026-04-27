@@ -41,6 +41,8 @@ class MovieSearchViewModel(
                 }
 
                 viewModelScope.launch {
+                    // Clears old results when the query becomes too short so the UI does not
+                    // keep showing suggestions that no longer match the user's input
                     if (query.length < 3) {
                         _stateFlow.update {
                             it.copy(
@@ -50,6 +52,7 @@ class MovieSearchViewModel(
                             )
                         }
                     } else if (query.length % 3 == 0) {
+                        // Limited search to every 3 characters to reduce unnecessary API requests
                         _stateFlow.update { it.copy(loading = true) }
 
                         try {
@@ -115,6 +118,7 @@ class MovieSearchViewModel(
 
             is MovieSearchIntent.SelectMovie -> {
                 Log.d(LOG_TAG, "Selected movie: ${intent.movie.title}")
+                // Keeps the selected movie in state
                 _stateFlow.update {
                     it.copy(selectedMovie = intent.movie)
                 }
@@ -129,6 +133,7 @@ class MovieSearchViewModel(
     fun undoSaveMovie(movie: Movie) {
         viewModelScope.launch {
             try {
+                // The undo action removes the movie that was just saved
                 repo.deleteMovie(movie)
                 Log.d(LOG_TAG, "Undo save for movie: ${movie.title}")
             } catch (e: Exception) {
@@ -142,12 +147,14 @@ class MovieSearchViewModel(
 
         viewModelScope.launch {
             try {
+                // Prevents duplicate database entries for the same movie
                 if (repo.alreadyExists(selected.imdbId)) {
                     Log.d(LOG_TAG, "Movie already exists: ${selected.imdbId}")
                     _effectFlow.emit(MovieSearchEffect.MovieAlreadyExists(selected.title))
                     return@launch
                 }
 
+                // Converts the search result model into the locally stored Movie model before inserting it into the Room database
                 val movie = Movie(
                     imdbId = selected.imdbId,
                     title = selected.title,

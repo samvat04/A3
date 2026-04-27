@@ -1,5 +1,6 @@
 package com.example.sdangol1_a3.data
 
+// Single cast member returned for a movie's cast listing
 data class CastMember(
     val imdbPersonId: String,
     val name: String,

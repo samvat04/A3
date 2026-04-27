@@ -13,6 +13,7 @@ fun MovieListScreen(
     onSelectMovie: (Movie) -> Unit = {},
     onToggleFavorite: (Movie) -> Unit = {}
 ) {
+    // Shows an empty state message instead of a blank list when nothing has been saved
     if(movies.isEmpty()) {
         EmptyMovieListContent(modifier = modifier)
     } else {

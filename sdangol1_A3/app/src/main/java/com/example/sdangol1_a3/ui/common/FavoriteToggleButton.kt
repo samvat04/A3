@@ -12,6 +12,7 @@ fun FavoriteToggleButton(
     isFavorite: Boolean,
     onToggle: () -> Unit
 ) {
+    // Reusable favorite button so the same icon behavior can be shared
     IconButton(onClick = onToggle) {
         Icon(
             imageVector = if (isFavorite) {

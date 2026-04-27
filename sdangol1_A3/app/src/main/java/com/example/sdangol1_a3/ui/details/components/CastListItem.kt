@@ -32,6 +32,7 @@ fun CastListItem(
                 ValueText(text = castMember.characters.joinToString())
             }
 
+            // Opens the selected cast member's IMDb page in a browser
             MovieButton(
                 text = "IMDb",
                 onClick = { onViewPerson(castMember) }

@@ -8,6 +8,7 @@ class RapidApiInterceptor(
     private val apiKey: String
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        // Attaches the required RapidAPI headers to every outgoing request
         val request = chain.request()
             .newBuilder()
             .addHeader("x-rapidapi-key", apiKey)

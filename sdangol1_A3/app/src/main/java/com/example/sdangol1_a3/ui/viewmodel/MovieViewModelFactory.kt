@@ -12,7 +12,6 @@ import com.example.sdangol1_a3.data.MovieRepo
 class MovieViewModelFactory : ViewModelProvider.Factory {
     companion object {
         private const val LOG_TAG = "448.MovieViewModelFactory"
-
         private val CONTEXT_KEY = object : CreationExtras.Key<Context> {}
 
         fun creationExtras(

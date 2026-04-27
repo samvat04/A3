@@ -2,6 +2,7 @@ package com.example.sdangol1_a3.data.response
 
 import kotlinx.serialization.Serializable
 
+// DTO used to deserialize title results directly from the IMDb API response
 @Serializable
 data class ImdbTitleDto(
     val id: String,

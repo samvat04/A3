@@ -12,6 +12,7 @@ fun MovieButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
+    // Wraps a standard Material button, just a helper
     Button(
         onClick = onClick,
         modifier = modifier,

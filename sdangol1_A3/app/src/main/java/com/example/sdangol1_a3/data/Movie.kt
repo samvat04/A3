@@ -6,6 +6,7 @@ import java.util.UUID
 
 @Entity(tableName = "movie")
 data class Movie(
+    // UUID is used as the local primary key so each saved movie has a database identity
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     val imdbId: String,
     val title: String,

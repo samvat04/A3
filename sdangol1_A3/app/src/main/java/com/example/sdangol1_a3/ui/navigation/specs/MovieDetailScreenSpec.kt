@@ -79,6 +79,8 @@ data object MovieDetailScreenSpec : IScreenSpec {
         val movieIdArg = navBackStackEntry.arguments?.getString(ARG_MOVIE_ID)
 
         LaunchedEffect(movieIdArg) {
+            // Loads the selected movie when the detail screen is entered using the
+            // movie ID passed through navigation arguments
             movieIdArg?.let {
                 dispatcher.invoke(MovieDetailIntent.LoadMovie(UUID.fromString(it)))
             }
@@ -110,6 +112,7 @@ data object MovieDetailScreenSpec : IScreenSpec {
                     dispatcher.invoke(MovieDetailIntent.FetchCast(movie.imdbId))
                 },
                 onViewPerson = { castMember ->
+                    // Opening the IMDb page is given to the intent factory
                     context.startActivity(
                         ImdbIntentFactory.buildPersonPageIntent(castMember)
                     )
@@ -175,6 +178,7 @@ data object MovieDetailScreenSpec : IScreenSpec {
         }
 
         if (showDeleteDialog) {
+            // The delete confirmation
             DeleteMovieConfirmationDialog(
                 movie = movie,
                 onDismissRequest = {

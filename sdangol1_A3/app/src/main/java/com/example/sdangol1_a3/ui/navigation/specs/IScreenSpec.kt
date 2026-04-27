@@ -64,6 +64,7 @@ sealed interface IScreenSpec {
                 Text("Android Movie Database")
             },
             actions = {
+                // Each screen spec can contribute its own top bar actions
                 TopAppBarActions(
                     navController = navController,
                     navBackStackEntry = navBackStackEntry

@@ -11,6 +11,7 @@ import com.example.sdangol1_a3.data.Movie
 @SuppressLint("RestrictedApi")
 @Database(
     entities = [Movie::class],
+    // Reverted to version 1 since it shouldn't matter now
     version = 1
 )
 @TypeConverters(MovieTypeConverters::class)
@@ -21,6 +22,7 @@ abstract class MovieDatabase : RoomDatabase() {
         private var INSTANCE: MovieDatabase? = null
 
         fun getInstance(context: Context): MovieDatabase {
+            // Builds the Room database once and reuses it for the lifetime of the app
             return INSTANCE ?: Room.databaseBuilder(
                 context.applicationContext,
                 MovieDatabase::class.java,

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 fun EmptyMovieListContent(
     modifier: Modifier = Modifier
 ) {
+    // Placeholder content
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

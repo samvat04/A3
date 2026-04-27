@@ -28,10 +28,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             Sdangol1_A3Theme {
                 val navController = rememberNavController()
+
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 appSnackbarHostState = snackbarHostState
 
+                // Collects one-time snackbar events
                 LaunchedEffect(Unit) {
                     SnackbarManager.messages.collectLatest { snackbarMessage ->
                         snackbarHostState.showSnackbar(

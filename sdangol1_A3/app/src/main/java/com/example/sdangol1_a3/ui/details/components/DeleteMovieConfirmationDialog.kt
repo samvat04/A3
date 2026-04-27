@@ -37,6 +37,7 @@ fun DeleteMovieConfirmationDialog(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Delete confirmation
                 LabelText(text = "Confirm Delete")
                 ValueText(
                     modifier = Modifier.padding(top = 8.dp),

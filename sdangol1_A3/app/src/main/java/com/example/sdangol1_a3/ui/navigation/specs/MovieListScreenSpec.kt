@@ -74,6 +74,8 @@ data object MovieListScreenSpec : IScreenSpec {
     ) {
         val context = LocalContext.current
 
+        // The list screen's top bar actions use the same ViewModel so the filter menu
+        // can update the list state without duplicating filtering logic in the UI
         val viewModel = ViewModelProvider(
             store = navBackStackEntry!!.viewModelStore,
             factory = MovieViewModelFactory(),
